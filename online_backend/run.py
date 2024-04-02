@@ -39,7 +39,7 @@ def run_model(img_lst, vis_img_lst, img_fp):
     model = net(topN=6, n_class=2, use_gpu=use_gpu)
     if use_gpu:
         model.load_state_dict(torch.load('./model.ckpt')['net_state_dict'])
-        model = model.cpu()
+        model = model.cuda()
     else:
         model.load_state_dict(torch.load('./model.ckpt', map_location='cpu')['net_state_dict'])
     model.eval()
@@ -49,14 +49,14 @@ def run_model(img_lst, vis_img_lst, img_fp):
     anchor_lst = []
     for i, data in enumerate(loader):
         if use_gpu:
-            img, img_raw = data[0].cpu(), data[2].cpu()
+            img, img_raw = data[0].cuda(), data[2].cuda()
         else:
             img, img_raw = data[0], data[2]
         with torch.no_grad():
             _, concat_logits, _, _, _, anchor = model(img, img_raw, True, True)
         # calculate accuracy
         pred = torch.nn.Softmax(1)(concat_logits)
-        pred_lst.append(pred.data.cpu().numpy())
+        pred_lst.append(pred.data.cuda().numpy())
         anchor_lst.append(anchor)
     pred_lst = np.concatenate(pred_lst, 0)
     anchor_lst = np.concatenate(anchor_lst, 0)

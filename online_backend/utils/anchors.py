@@ -119,7 +119,7 @@ def hard_nms(cdds, topn=10, iou_thresh=0.25):
 #             x1 = x1 - 224
 #             attention_map[y0:y1, x0:x1] += (top_n_cdds[i][j][0] / SUM)
 #         attention_map_lst.append(attention_map)
-#     return torch.Tensor(np.array(attention_map_lst)).cpu()
+#     return torch.Tensor(np.array(attention_map_lst)).cuda()
 # =============================================================================
 def cdds2attention_map(top_n_cdds):
     attention_box_lst = []

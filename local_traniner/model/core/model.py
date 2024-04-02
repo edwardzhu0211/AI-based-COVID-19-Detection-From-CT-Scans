@@ -61,8 +61,8 @@ class attention_net(nn.Module):
         x_pad = F.pad(x, (self.pad_side, self.pad_side, 
                           self.pad_side, self.pad_side), mode='constant', value=0)
 # =============================================================================
-#         np.save('./x_pad.npy', x_pad.data.cpu().numpy())
-#         np.save('./x.npy', x.data.cpu().numpy())
+#         np.save('./x_pad.npy', x_pad.data.cuda().numpy())
+#         np.save('./x.npy', x.data.cuda().numpy())
 #         assert 0
 # =============================================================================
         batch = x.size(0)
@@ -72,11 +72,11 @@ class attention_net(nn.Module):
             np.concatenate((x.reshape(-1, 1), 
                             self.edge_anchors_small.copy(), 
                             np.arange(0, len(x)).reshape(-1, 1)), axis=1)
-            for x in rpn_score_small.data.cpu().numpy()]
+            for x in rpn_score_small.data.cuda().numpy()]
         top_n_cdds_small = [hard_nms(x, topn=self.topN//2, iou_thresh=0.1) for x in all_cdds_small]
         top_n_cdds_small = np.array(top_n_cdds_small)
         top_n_index_small = top_n_cdds_small[:, :, -1].astype(int)
-        top_n_index_small = torch.from_numpy(top_n_index_small).cpu()
+        top_n_index_small = torch.from_numpy(top_n_index_small).cuda()
         top_n_prob_small = torch.gather(rpn_score_small, dim=1, index=top_n_index_small)
         # large
         rpn_score_large, rpn_score_large = self.proposal_net(rpn_feature.detach())
@@ -84,15 +84,15 @@ class attention_net(nn.Module):
             np.concatenate((x.reshape(-1, 1), 
                             self.edge_anchors_large.copy(), 
                             np.arange(0, len(x)).reshape(-1, 1)), axis=1)
-            for x in rpn_score_large.data.cpu().numpy()]
+            for x in rpn_score_large.data.cuda().numpy()]
         top_n_cdds_large = [hard_nms(x, topn=self.topN//2, iou_thresh=0.1) for x in all_cdds_large]
         top_n_cdds_large = np.array(top_n_cdds_large)
         top_n_index_large = top_n_cdds_large[:, :, -1].astype(int)
-        top_n_index_large = torch.from_numpy(top_n_index_large).cpu()
+        top_n_index_large = torch.from_numpy(top_n_index_large).cuda()
         top_n_prob_large = torch.gather(rpn_score_large, dim=1, index=top_n_index_large)
         
         
-        part_imgs = torch.zeros([batch, self.topN, 3, 224, 224]).cpu()
+        part_imgs = torch.zeros([batch, self.topN, 3, 224, 224]).cuda()
         for i in range(batch):
             for j in range(self.topN//2):
                 [y0, x0, y1, x1] = top_n_cdds_small[i][j, 1:5].astype(int)
@@ -128,7 +128,7 @@ class attention_net(nn.Module):
         top_n_prob = torch.cat([top_n_prob_small, top_n_prob_large], 1)
         
         if return_vis:
-            temp = temp.view(batch, self.topN, 2).data.cpu().numpy()
+            temp = temp.view(batch, self.topN, 2).data.cuda().numpy()
             temp = np.exp(temp)
             temp = temp / temp.sum(2, keepdims=True)
             temp = temp[:, :, 1]
@@ -180,7 +180,7 @@ def list_loss(logits, targets):
 
 
 def ranking_loss(score, targets, proposal_num=PROPOSAL_NUM):
-    loss = Variable(torch.zeros(1).cpu())
+    loss = Variable(torch.zeros(1).cuda())
     batch_size = score.size(0)
     for i in range(proposal_num):
         targets_p = (targets > targets[:, i].unsqueeze(1)).type(torch.FloatTensor)
@@ -192,7 +192,7 @@ def ranking_loss(score, targets, proposal_num=PROPOSAL_NUM):
 
 
 def vis(raw_img, top_n_cdds, n=2, T=0):
-    raw_img = raw_img.data.cpu().numpy()
+    raw_img = raw_img.data.cuda().numpy()
     img_lst = []
     for bs in range(raw_img.shape[0]):
         img = nor(raw_img[bs])

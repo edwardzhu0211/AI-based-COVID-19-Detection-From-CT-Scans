@@ -43,6 +43,8 @@ if __name__ == '__main__':
         ckpt = torch.load(resume)
         net.load_state_dict(ckpt['net_state_dict'])
         start_epoch = ckpt['epoch'] + 1
+
+    print(start_epoch)
     creterion = torch.nn.CrossEntropyLoss()
 
     # define optimizers
@@ -67,11 +69,11 @@ if __name__ == '__main__':
         for layer in ckpt['net_state_dict'] if 'pretrained_model' in layer})
         
         start_epoch = ckpt['epoch'] + 1
-    net = net.cpu()
+    net = net.cuda()
     net = DataParallel(net)
 
     skip_epoch = 0
-    print(start_epoch)
+    print(start_epoch)  
     for epoch in range(start_epoch, 2):
         if epoch > skip_epoch:
             add = True
@@ -85,7 +87,7 @@ if __name__ == '__main__':
         train_correct = 0
         total = 0
         for i, data in enumerate(trainloader):
-            img, label, img_raw = data[0].cpu(), data[1].cpu(), data[2]
+            img, label, img_raw = data[0].cuda(), data[1].cuda(), data[2]
             batch_size = img.size(0)
             raw_optimizer.zero_grad()
             part_optimizer.zero_grad()
@@ -127,16 +129,16 @@ if __name__ == '__main__':
             file_name_lst = []
             for i, data in enumerate(valloader):
                 with torch.no_grad():
-                    img, label, img_raw = data[0].cpu(), data[1].cpu(), data[2]
+                    img, label, img_raw = data[0].cuda(), data[1].cuda(), data[2]
                     batch_size = img.size(0)
                     _, concat_logits, _, _, _, = net(img, img_raw, add)
                     # calculate loss
                     concat_loss = creterion(concat_logits, label)
                     # calculate accuracy
                     _, concat_predict = torch.max(concat_logits, 1)
-                    auc_label_lst += list(label.data.cpu().numpy())
+                    auc_label_lst += list(label.data.cuda().numpy())
                     pred = torch.nn.Softmax(1)(concat_logits)
-                    auc_pred_lst.append(pred.data.cpu().numpy())
+                    auc_pred_lst.append(pred.data.cuda().numpy())
                     people_lst.append(data[3])
                     file_name_lst.append(data[4])
                     
@@ -175,16 +177,16 @@ if __name__ == '__main__':
     #                 continue
     # =============================================================================
                 with torch.no_grad():
-                    img, label, img_raw = data[0].cpu(), data[1].cpu(), data[2]
+                    img, label, img_raw = data[0].cuda(), data[1].cuda(), data[2]
                     batch_size = img.size(0)
                     _, concat_logits, _, _, _ = net(img, img_raw, add, False)
                     # calculate loss
                     concat_loss = creterion(concat_logits, label)
                     # calculate accuracy
                     _, concat_predict = torch.max(concat_logits, 1)
-                    auc_label_lst += list(label.data.cpu().numpy())
+                    auc_label_lst += list(label.data.cuda().numpy())
                     pred = torch.nn.Softmax(1)(concat_logits)
-                    auc_pred_lst.append(pred.data.cpu().numpy())
+                    auc_pred_lst.append(pred.data.cuda().numpy())
                     people_lst.append(data[3])
                     file_name_lst += list(data[4])
     # =============================================================================
