@@ -72,7 +72,7 @@ class attention_net(nn.Module):
             np.concatenate((x.reshape(-1, 1), 
                             self.edge_anchors_small.copy(), 
                             np.arange(0, len(x)).reshape(-1, 1)), axis=1)
-            for x in rpn_score_small.data.cuda().numpy()]
+            for x in rpn_score_small.data.numpy()]
         top_n_cdds_small = [hard_nms(x, topn=self.topN//2, iou_thresh=0.1) for x in all_cdds_small]
         top_n_cdds_small = np.array(top_n_cdds_small)
         top_n_index_small = top_n_cdds_small[:, :, -1].astype(int)
