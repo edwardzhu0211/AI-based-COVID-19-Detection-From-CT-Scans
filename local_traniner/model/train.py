@@ -134,9 +134,9 @@ if __name__ == '__main__':
                     concat_loss = creterion(concat_logits, label)
                     # calculate accuracy
                     _, concat_predict = torch.max(concat_logits, 1)
-                    auc_label_lst += list(label.data.cuda().numpy())
+                    auc_label_lst += list(label.data.cpu().numpy())
                     pred = torch.nn.Softmax(1)(concat_logits)
-                    auc_pred_lst.append(pred.data.cuda().numpy())
+                    auc_pred_lst.append(pred.data.cpu().numpy())
                     people_lst.append(data[3])
                     file_name_lst.append(data[4])
                     
@@ -182,9 +182,9 @@ if __name__ == '__main__':
                     concat_loss = creterion(concat_logits, label)
                     # calculate accuracy
                     _, concat_predict = torch.max(concat_logits, 1)
-                    auc_label_lst += list(label.data.cuda().numpy())
+                    auc_label_lst += list(label.data.cpu().numpy())
                     pred = torch.nn.Softmax(1)(concat_logits)
-                    auc_pred_lst.append(pred.data.cuda().numpy())
+                    auc_pred_lst.append(pred.data.cpu().numpy())
                     people_lst.append(data[3])
                     file_name_lst += list(data[4])
     # =============================================================================
