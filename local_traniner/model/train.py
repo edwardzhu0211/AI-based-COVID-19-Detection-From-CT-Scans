@@ -44,7 +44,6 @@ if __name__ == '__main__':
         net.load_state_dict(ckpt['net_state_dict'])
         start_epoch = ckpt['epoch'] + 1
 
-    print(start_epoch)
     creterion = torch.nn.CrossEntropyLoss()
 
     # define optimizers
@@ -73,7 +72,6 @@ if __name__ == '__main__':
     net = DataParallel(net)
 
     skip_epoch = 0
-    print(start_epoch)  
     for epoch in range(start_epoch, 2):
         if epoch > skip_epoch:
             add = True
