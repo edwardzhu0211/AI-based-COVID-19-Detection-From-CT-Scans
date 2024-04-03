@@ -30,11 +30,11 @@ if __name__ == '__main__':
     valset = dataset.SARS(root=val_path, is_train=False)
     testset = dataset.SARS(root=test_path, is_train=False)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE,
-                                            shuffle=True, num_workers=8, drop_last=False)
+                                            shuffle=True, num_workers=2, drop_last=False)
     testloader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE,
-                                            shuffle=False, num_workers=8, drop_last=False)
+                                            shuffle=False, num_workers=2, drop_last=False)
     valloader = torch.utils.data.DataLoader(valset, batch_size=BATCH_SIZE,
-                                            shuffle=False, num_workers=8, drop_last=False)
+                                            shuffle=False, num_workers=2, drop_last=False)
 
     n_class = 2
     # define model
