@@ -25,7 +25,7 @@ if __name__ == '__main__':
     n_class = 2
     net = model.attention_net(topN=PROPOSAL_NUM, n_class=n_class)
     if resume:
-        ckpt = torch.load(resume, map_location=torch.device('cpu'))
+        ckpt = torch.load(resume, map_location=torch.device('cuda'))
         net.load_state_dict(ckpt['net_state_dict'])
         start_epoch = ckpt['epoch'] + 1
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     #                 continue
     # =============================================================================
         with torch.no_grad():
-            img, label, img_raw = data[0].cpu(), data[1].cpu(), data[2]
+            img, label, img_raw = data[0].cuda(), data[1].cuda(), data[2]
             batch_size = img.size(0)
             _, concat_logits, _, _, _ = net(img, img_raw, False, False)
             # calculate loss
