@@ -66,7 +66,6 @@ if __name__ == '__main__':
         ckpt = torch.load(resume)
         net.pretrained_model.load_state_dict({layer.replace('pretrained_model.', ''):ckpt['net_state_dict'][layer] 
         for layer in ckpt['net_state_dict'] if 'pretrained_model' in layer})
-        
         start_epoch = ckpt['epoch'] + 1
     net = net.cuda()
     net = DataParallel(net)
@@ -160,57 +159,57 @@ if __name__ == '__main__':
             np.save('./train_people.npy', np.concatenate(people_lst, 0))
             np.save('./train_file_name.npy', np.concatenate(file_name_lst, 0))
         # evaluate on test set
-            test_loss = 0
-            test_correct = 0
-            total = 0
-            auc_label_lst = []
-            auc_pred_lst = []
-            people_lst = []
-            img_vis_lst = []
-            file_name_lst = []
-            anchor_lst = []
-            for i, data in enumerate(testloader):
-    # =============================================================================
-    #             if i < 1:
-    #                 continue
-    # =============================================================================
-                with torch.no_grad():
-                    img, label, img_raw = data[0].cuda(), data[1].cuda(), data[2]
-                    batch_size = img.size(0)
-                    _, concat_logits, _, _, _ = net(img, img_raw, add, False)
-                    # calculate loss
-                    concat_loss = creterion(concat_logits, label)
-                    # calculate accuracy
-                    _, concat_predict = torch.max(concat_logits, 1)
-                    auc_label_lst += list(label.data.cpu().numpy())
-                    pred = torch.nn.Softmax(1)(concat_logits)
-                    auc_pred_lst.append(pred.data.cpu().numpy())
-                    people_lst.append(data[3])
-                    file_name_lst += list(data[4])
-    # =============================================================================
-    #                 img_vis_lst.append(img_vis)
-    #                 anchor_lst.append(anchor)
-    # =============================================================================
+    #         test_loss = 0
+    #         test_correct = 0
+    #         total = 0
+    #         auc_label_lst = []
+    #         auc_pred_lst = []
+    #         people_lst = []
+    #         img_vis_lst = []
+    #         file_name_lst = []
+    #         anchor_lst = []
+    #         for i, data in enumerate(testloader):
+    # # =============================================================================
+    # #             if i < 1:
+    # #                 continue
+    # # =============================================================================
+    #             with torch.no_grad():
+    #                 img, label, img_raw = data[0].cuda(), data[1].cuda(), data[2]
+    #                 batch_size = img.size(0)
+    #                 _, concat_logits, _, _, _ = net(img, img_raw, add, False)
+    #                 # calculate loss
+    #                 concat_loss = creterion(concat_logits, label)
+    #                 # calculate accuracy
+    #                 _, concat_predict = torch.max(concat_logits, 1)
+    #                 auc_label_lst += list(label.data.cpu().numpy())
+    #                 pred = torch.nn.Softmax(1)(concat_logits)
+    #                 auc_pred_lst.append(pred.data.cpu().numpy())
+    #                 people_lst.append(data[3])
+    #                 file_name_lst += list(data[4])
+    # # =============================================================================
+    # #                 img_vis_lst.append(img_vis)
+    # #                 anchor_lst.append(anchor)
+    # # =============================================================================
 
-                    total += batch_size
-                    test_correct += torch.sum(concat_predict.data == label.data)
-                    test_loss += concat_loss.item() * batch_size
-                    progress_bar(i, len(testloader), 'eval test set')
-            test_acc = float(test_correct) / total
-            test_loss = test_loss / total
-            _print(
-                'epoch:{} - test loss: {:.3f} and test acc: {:.3f} total sample: {}'.format(
-                    epoch,
-                    test_loss,
-                    test_acc,
-                    total))
+    #                 total += batch_size
+    #                 test_correct += torch.sum(concat_predict.data == label.data)
+    #                 test_loss += concat_loss.item() * batch_size
+    #                 progress_bar(i, len(testloader), 'eval test set')
+    #         test_acc = float(test_correct) / total
+    #         test_loss = test_loss / total
+    #         _print(
+    #             'epoch:{} - test loss: {:.3f} and test acc: {:.3f} total sample: {}'.format(
+    #                 epoch,
+    #                 test_loss,
+    #                 test_acc,
+    #                 total))
             
             
-            print(f'auc: {roc_auc_score(auc_label_lst, np.concatenate(auc_pred_lst, 0)[:, 1]):.4f}')
-            np.save('./test_pred.npy', np.concatenate(auc_pred_lst, 0))
-            np.save('./test_label.npy', np.array(auc_label_lst))
-            np.save('./test_people.npy', np.concatenate(people_lst, 0))
-            np.save('./test_file_name.npy', np.array(file_name_lst))
+    #         print(f'auc: {roc_auc_score(auc_label_lst, np.concatenate(auc_pred_lst, 0)[:, 1]):.4f}')
+    #         np.save('./test_pred.npy', np.concatenate(auc_pred_lst, 0))
+    #         np.save('./test_label.npy', np.array(auc_label_lst))
+    #         np.save('./test_people.npy', np.concatenate(people_lst, 0))
+    #         np.save('./test_file_name.npy', np.array(file_name_lst))
             
     # =============================================================================
     #         np.save('./test_anchor_lst.npy', np.concatenate(anchor_lst, 0))
@@ -225,8 +224,8 @@ if __name__ == '__main__':
                 'epoch': epoch,
                 'train_loss': train_loss,
                 'train_acc': train_acc,
-                'test_loss': test_loss,
-                'test_acc': test_acc,
+                # 'test_loss': test_loss,
+                # 'test_acc': test_acc,
                 'net_state_dict': net_state_dict},
                 os.path.join(save_dir, '%03d.ckpt' % epoch))
     # =============================================================================
