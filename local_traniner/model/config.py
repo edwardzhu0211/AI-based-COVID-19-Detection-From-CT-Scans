@@ -5,6 +5,6 @@ INPUT_SIZE = (448, 448)# (448, 448)  # (w, h)
 LR = 0.0008# 0.002
 WD = 1e-4
 SAVE_FREQ = 1
-resume = ''#'./20200223_152850/002.ckpt'
+resume = '/home/edwardzhu0211/CS598-DLH/local_traniner/model/20240404_004045/002.ckpt'#'./20200223_152850/002.ckpt'
 test_model = 'model.ckpt'
 save_dir = './'

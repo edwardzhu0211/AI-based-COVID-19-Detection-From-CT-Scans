@@ -30,7 +30,7 @@ if __name__ == '__main__':
         start_epoch = ckpt['epoch'] + 1
 
 
-    test_path = '/Users/edwardzhu/Desktop/CS598-DLH/local_traniner/input/test'
+    test_path = '/home/edwardzhu0211/CS598-DLH/local_traniner/input/test'
     testset = dataset.SARS(root=test_path, is_train=False)
     testloader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE,
                                                 shuffle=False, num_workers=2, drop_last=False)
