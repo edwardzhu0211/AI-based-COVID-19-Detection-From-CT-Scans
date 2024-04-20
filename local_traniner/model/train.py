@@ -145,7 +145,7 @@ if __name__ == '__main__':
                     train_acc,
                     total))
             
-            print(f'auc: {roc_auc_score(auc_label_lst, np.concatenate(auc_pred_lst, 0)[:, 1]):.4f}')
+            _print(f'auc: {roc_auc_score(auc_label_lst, np.concatenate(auc_pred_lst, 0)[:, 1]):.4f}')
             np.save('./train_pred.npy', np.concatenate(auc_pred_lst, 0))
             np.save('./train_label.npy', np.array(auc_label_lst))
             np.save('./train_people.npy', np.concatenate(people_lst, 0))
