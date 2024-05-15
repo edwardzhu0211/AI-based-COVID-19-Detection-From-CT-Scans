@@ -6,5 +6,5 @@ Run Locally
 
 3. You may need to also unzip the data at (./local_traniner/input/*.zip)
 
-4. Run DL4H_Team_36.ipynb
+4. Run main.ipynb
    
