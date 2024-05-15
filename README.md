@@ -1,5 +1,3 @@
-CS598 DLH Project
-
 Run Locally
 
 1. Clone the repository from the Github Repo: https://github.com/edwardzhu0211/CS598-DLH/tree/main
